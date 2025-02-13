@@ -1,7 +1,7 @@
-# **2025-ADVDBMS-LAB007**
+# **2025-ADVDBMS-LAB008**
 Week 02 - Review on Database Concepts
 
-Laboratory # 07 - Guided Coding Exercise: Querying Data with SELECT, FROM, and WHERE Clauses
+Laboratory # 08 - Combined Week 04 Database Activity
 
 ## **Instructions**
 
@@ -77,141 +77,233 @@ Only perform this if this is the first time you will setup your Git Environment
 
 ### **Step 3: Complete the Assignment**
 
-**Laboratory # 07 - Guided Coding Exercise: Querying Data with SELECT, FROM, and WHERE Clauses**
+**Laboratory # 08 - Combined Week 04 Database Activity**
 
    **Objective:**
-   Learn to retrieve data from one or more tables using `SELECT`, `FROM`, and `WHERE` clauses. This exercise focuses on basic queries, conditional queries, and joins.
+   Design, implement, populate, and query a bookstore database, demonstrating the relationship between ERD design and SQL operations.
 
    **Folder Structure:**
    ```
-   university_db/
-   ├── insert_courses.sql
-   ├── insert_enrollments.sql
-   ├── select_all_students.sql
-   ├── select_students_by_enrollment_date.sql
-   └── join_students_and_enrollments.sql
+  bookstore_database/
+   ├── create_bookstore_schema.sql
+   ├── insert_bookstore_data.sql
+   └── query_bookstore_data.sql
    ```
 
    **File Naming Convention:**
-   - `insert_courses.sql`: Inserts sample course data into the Courses table for join query testing.
-   - `insert_enrollments.sql`: Inserts sample enrollment data into the Enrollments table, linking students to courses with enrollment dates.  Requires existing Students and Courses records.
-   - `select_all_students.sql`: Contains the query to select all columns from the `Students` table.
-   - `select_students_by_enroll_date.sql`: Contains the query to select students based on their enrollment date.
-   - `join_students_and_enrollments.sql`: Contains the query to join `Students` and `Enrollments` tables.
+   - `create_bookstore_schema.sql`: SQL script to create the database schema.
+   - `insert_bookstore_data.sql`: SQL script to insert sample data.
+   - `query_bookstore_data.sql`: SQL script with queries to explore and manipulate data.
+
+   **Entities to be Created:**
+   - Books
+   - Authors
+   - BookAuthors (linking table)
+   - Customers
+   - Orders
+   - OrderDetails
+   
+   **Data to be Inserted:**
+   Insert at least 3 records for each table, ensuring foreign key relationships are correctly established. For example, when inserting into OrderDetails, make sure the OrderID and ISBN exist in the Orders and Books tables, respectively.
+
+   **Fields to be Joined:**
+   - Customers and Orders (on CustomerID)
+   - Orders and OrderDetails (on OrderID)
+   - OrderDetails and Books (on ISBN)
+   - Books and BookAuthors (on ISBN)
+   - Authors and BookAuthors (on AuthorID)
 
    **Notable Observations (to be discussed after completing the exercise):**
-   - SELECT is Your Palette: It dictates which columns you retrieve. * is a quick way for everything, but often you'll want to be specific for performance and clarity.
-   - FROM is Your Canvas: It specifies the table(s) you're drawing data from. It's the foundation of your query.
-   - WHERE is Your Filter: It refines your results based on conditions. Think of it as a magnifying glass, focusing on the data you need.
-   - Joins: Connecting the Dots: Joins are crucial for combining data from related tables. Master the different join types (INNER, LEFT, RIGHT, FULL) to get the most out of your database.
-   - Aliases: Your Shorthand: Aliases make your queries easier to read and write, especially when dealing with multiple tables or complex joins. They're like nicknames for your tables.
+   - Auto-increment is used for primary keys where appropriate (Authors, Customers, Orders).
+   - Foreign keys are crucial for maintaining referential integrity.
+   - The BookAuthors table resolves the many-to-many relationship between Books and Authors.
+   - Queries demonstrate how joins retrieve related data from multiple tables.
 
    **SQL Script Best Practices**
-   - Data Exploration First: Use SELECT statements to familiarize yourself with your data. Knowing your data is the first step to querying it effectively.
-   - Filtering and Sorting Mastery: Become proficient with the WHERE clause and its various conditions (LIKE, BETWEEN, IN, NOT IN, etc.). Learn how to sort your results using ORDER BY. These are essential for data analysis.
-   - Explicit Joins: The Professional Way: Always use the explicit join syntax (INNER JOIN, LEFT JOIN, etc.). It's clearer, more maintainable, and the industry standard. Avoid the older, implicit join syntax whenever possible.
-   - Populate Before Querying: Remember to insert data into your tables before you try to query it. The insert_courses.sql and insert_enrollments.sql scripts are essential for setting up the data for your join_students_and_enrollments.sql query. This is a crucial step that's easy to overlook.
+   - Use comments to explain each section.
+   - Follow consistent naming conventions.
+   - Use proper indentation for readability.
+   - Test each script individually.
+   - Use transactions for complex operations (optional, but good practice).
 
    **Step-by-Step Instructions:**
 
-   1. Setting up the Environment
-   - Ensure you have a SQL database management system installed, connected to the `UniversityDB` database, and that the `Students` and `Enrollments` tables (and potentially `Courses` table if you want to include course information in the join) have been created and populated with data from the previous exercises.
-   - Create the three SQL files as shown in the folder structure above within the `university_db` directory.
+   1. Create the Database and Tables (`create_bookstore_schema.sql`):
+   - Open `create_bookstore_schema.sql` in a text editor.
+   - Create Database: Write the SQL command to create a database named BookstoreDB.
+   ```SQL
+   CREATE DATABASE `BookstoreDB`;
    
-   2. `insert_courses.sql` (Insert Courses Data)
-      - Open `insert_courses.sql` in a text editor.
-      - Select data into the courses table:
-      ```SQL
-      USE `UniversityDB`;
-
-      -- Step 1: Insert data into courses table
-      INSERT INTO `Courses` (`CourseName`)
-      VALUES
-         ('Introduction to Computer Science'),
-         ('Calculus I'),
-         ('Modern World History'),
-         ('English Literature'),
-         ('Data Structures');
-
-      ```
-      - Save the `insert_courses.sql` file.
-
-   3. `insert_enrollments.sql` (Insert Enrollments Data)
-      - Open `insert_enrollments.sql` in a text editor.
-      - Select data into the enrollments table:
-      ```SQL
-      USE `UniversityDB`;
-
-      -- Step 2: Insert data into enrollments table
-      INSERT INTO `Enrollments` (`StudentID`, `CourseID`, `EnrollmentDate`)
-      VALUES
-         (1, 1, '2023-09-01'),
-         (2, 2, '2023-09-01'),
-         (1, 3, '2023-09-01'),
-         (2, 4, '2023-09-02'),
-         (2, 5, '2023-09-03');
-
-
-      ```
-      - Save the `insert_enrollments.sql` file.
-
-   4. `select_all_students.sql` (Select All Students):
-      - Open `select_all_students.sql` in a text editor.
-      - Select all columns from Students:
-      ```SQL
-      USE `UniversityDB`;
-      
-      -- Step 3: Select all columns from Students
-      SELECT * FROM `Students`;
-      
-      ```
-      
-      - Save the `select_all_students.sql` file.
-      
-   5. `select_students_by_enrollment_date.sql` (Select Students by Enrollment Date):
-      - Open `select_students_by_enrollment_date.sql` in a text editor.
-      - Select `FirstName` and `LastName` for students enrolled on '2023-09-01':
-      ```SQL
-      USE `UniversityDB`;
-      
-      -- Step 4: Select FirstName and LastName for students enrolled on '2023-09-01'
-      SELECT `FirstName`, `LastName`
-      FROM `Students`
-      WHERE `EnrollmentDate` = '2023-09-01';
-      
-      ```
-      
-      - Save the `select_students_by_enrollment_date.sql` file.
-      
-   6. `join_students_and_enrollments.sql` (Join Students and Enrollments):
-      - Open `join_students_and_enrollments.sql` in a text editor.
-      - Join Students and Enrollments to list student enrollments:
-      ```SQL
-      USE `UniversityDB`;
-      
-      -- Step 5: Join Students and Enrollments to list student enrollments
-      SELECT `s`.`FirstName`, `s`.`LastName`, `e`.`EnrollmentDate`, `c`.`CourseName`  -- Include CourseName
-      FROM `Students` AS `s`
-      INNER JOIN `Enrollments` AS `e` ON `s`.`StudentID` = `e`.`StudentID`
-      INNER JOIN `Courses` AS `c` ON `e`.`CourseID` = `c`.`CourseID`; -- Join with Courses table
-      
-      -- Alternative (older, implicit join syntax - less preferred):
-      -- SELECT s.FirstName, s.LastName, e.EnrollmentDate, c.CourseName
-      -- FROM Students s, Enrollments e, Courses c
-      -- WHERE s.StudentID = e.StudentID AND e.CourseID = c.CourseID;
-      
-      ```
-         - Important Note: The preferred way to write joins is using the `INNER JOIN`, `LEFT JOIN`, `RIGHT JOIN`, etc., keywords (explicit join syntax). The older comma-separated `FROM` clause with the join condition in the `WHERE` clause (implicit join syntax) is still supported but is considered less readable and maintainable, especially for complex joins.
-         - Aliases (`s`, `e`, `c`) are used to make the query more concise and readable.
-         - This example joins with the `Courses` table as well to show the `CourseName`. If you haven't created and populated the `Courses` table, you can remove `c.CourseName` from the `SELECT` list and the `INNER JOIN Courses` clause.
-      - Save the `join_students_and_enrollments.sql` file.
+   ```
+   - Use Database: Write the SQL command to select the BookstoreDB database for use.
+   ```SQL
+   USE `BookstoreDB`;
    
-   7. Executing the SQL Scripts:
-   - Open your SQL client and connect to the `UniversityDB` database.
-   - Select All: Execute the `select_all_students.sql` script.
-   - Select by Date: Execute the `select_students_by_enrollment_date.sql` script.
-   - Join: Execute the `join_students_and_enrollments.sql` script.
+   ```
+   - Create Tables: For each entity (Books, Authors, BookAuthors, Customers, Orders, OrderDetails), write a CREATE TABLE statement. 
+      - Define appropriate data types for each attribute.
+      - Declare primary keys for each table. Use AUTO_INCREMENT for IDs where appropriate (Authors, Customers, Orders).
+      - For the BookAuthors table, create a composite primary key using both ISBN and AuthorID.
+      - Define foreign key constraints to enforce referential integrity. For example, in the Orders table, the CustomerID should be a foreign key referencing the Customers table's CustomerID. Do this for all appropriate relationships. The BookAuthors table will have two foreign keys.
+   ```SQL
+   -- Books Table [cite: 11]
+   CREATE TABLE `Books` (
+       `ISBN` VARCHAR(20) PRIMARY KEY,
+       `Title` VARCHAR(255) NOT NULL,
+       `Price` DECIMAL(10,2) NOT NULL
+   );
+   
+   -- Authors Table [cite: 11]
+   CREATE TABLE `Authors` (
+       `AuthorID` INT PRIMARY KEY,
+       `Name` VARCHAR(255) NOT NULL
+   );
+   
+   -- BookAuthors Table (Associative Entity) [cite: 11]
+   CREATE TABLE `BookAuthors` (
+       `ISBN` VARCHAR(20),
+       `AuthorID` INT,
+       PRIMARY KEY (`ISBN`, `AuthorID`),
+       FOREIGN KEY (`ISBN`) REFERENCES Books(`ISBN`),
+       FOREIGN KEY (`AuthorID`) REFERENCES Authors(`AuthorID`)
+   );
+   
+   -- Customers Table [cite: 11]
+   CREATE TABLE `Customers` (
+       `CustomerID` INT PRIMARY KEY,
+       `Name` VARCHAR(255) NOT NULL,
+       `Email` VARCHAR(255) NOT NULL
+   );
+   
+   -- Orders Table [cite: 11]
+   CREATE TABLE `Orders` (
+       `OrderID` INT PRIMARY KEY,
+       `CustomerID` INT,
+       `OrderDate` DATE NOT NULL,
+       FOREIGN KEY (`CustomerID`) REFERENCES Customers(`CustomerID`)
+   );
+   
+   -- OrderDetails Table [cite: 11]
+   CREATE TABLE `OrderDetails` (
+       `OrderID` INT,
+       `ISBN` VARCHAR(20),
+       `Quantity` INT NOT NULL,
+       PRIMARY KEY (`OrderID`, `ISBN`),
+       FOREIGN KEY (`OrderID`) REFERENCES Orders(`OrderID`),
+       FOREIGN KEY (`ISBN`) REFERENCES Books(`ISBN`)
+   );
+   
+   ```    
+   - Save the create_bookstore_schema.sql file.
 
+   2. Insert Sample Data (`insert_bookstore_data.sql`):
+   - Open `insert_bookstore_data.sql` in a text editor.
+   - Use Database: Write the SQL command to select the `BookstoreDB` database.
+   ```SQL
+   USE `BookstoreDB`;
+   
+   ```
+   - Insert Data: For each table, write `INSERT INTO` statements to populate the table with sample data. 
+      - Insert at least three records for each table.
+      - Crucially: Ensure that foreign key relationships are satisfied. For example, when inserting into Orders, the CustomerID you use must exist in the Customers table. Similarly, when inserting into OrderDetails, the OrderID and ISBN must exist in the Orders and Books tables, respectively. The BookAuthors entries must reference valid ISBNs and AuthorIDs.
+   ```SQL
+   -- Insert into Books
+   INSERT INTO `Books` (`ISBN`, `Title`, Price) VALUES
+   ('9781234567890', 'The Hitchhiker''s Guide to the Galaxy', 7.99),
+   ('9780321765723', 'The Lord of the Rings', 12.99),
+   ('9780743273565', 'Pride and Prejudice', 9.99);
+   
+   -- Insert into Authors
+   INSERT INTO `Authors` (`AuthorID`, `Name`) VALUES
+   (1, 'Douglas Adams'),
+   (2, 'J.R.R. Tolkien'),
+   (3, 'Jane Austen');
+   
+   -- Insert into BookAuthors
+   INSERT INTO BookAuthors (`ISBN`, `AuthorID`) VALUES
+   ('9781234567890', 1),
+   ('9780321765723', 2),
+   ('9780743273565', 3);
+   
+   -- Insert into Customers
+   INSERT INTO `Customers` (`CustomerID`, `Name`, `Email`) VALUES
+   (1, 'John Doe', 'john.doe@example.com'),
+   (2, 'Jane Smith', 'jane.smith@example.com'),
+   (3, 'David Lee', 'david.lee@example.com');
+   
+   -- Insert into Orders
+   INSERT INTO `Orders` (`OrderID`, `CustomerID`, `OrderDate`) VALUES
+   (1, 1, '2024-07-26'),
+   (2, 2, '2024-07-27'),
+   (3, 3, '2024-07-28');
+   
+   -- Insert into OrderDetails
+   INSERT INTO `OrderDetails` (`OrderID`, `ISBN`, `Quantity`) VALUES
+   (1, '9781234567890', 1),
+   (1, '9780321765723', 2),
+   (2, '9780743273565', 1);
+   
+   ```
+   - Save the `insert_bookstore_data.sql` file.
+
+   3. Query and Manipulate Data (`query_bookstore_data.sql`)
+   - Open `query_bookstore_data.sql` in a text editor.
+   - Use Database: Write the SQL command to select the `BookstoreDB` database.
+   ```SQL
+   USE `BookstoreDB`;
+   
+   ```
+   - Data Retrieval: Write a SELECT statement that joins the Customers, Orders, OrderDetails, and Books tables to retrieve information about customer orders, including customer names, order dates, and book titles.
+   ```SQL
+   SELECT `c`.`Name` AS `CustomerName`, `o`.`OrderDate`, `b`.`Title` AS `BookTitle`, `od`.`Quantity`
+   FROM `Customers` `c`
+   JOIN `Orders` `o` ON `c`.`CustomerID` = `o`.`CustomerID`
+   JOIN `OrderDetails` `od` ON `o`.`OrderID` = `od`.`OrderID`
+   JOIN `Books` `b` ON `od`.`ISBN` = `b`.`ISBN`;
+   
+   ```
+   - Data Update: Write an UPDATE statement to change the price of one of the books. Then, write a SELECT statement to verify that the price has been updated.
+   ```SQL
+   UPDATE `Books` SET `Price` = 8.99 WHERE `ISBN` = '9781234567890';
+   
+   SELECT * FROM `Books` WHERE `ISBN` = '9781234567890';
+   
+   ```
+   - Data Deletion: Write a DELETE statement to remove one of the order details. Then, write a SELECT statement to verify that the order detail has been deleted.
+   ```SQL
+   DELETE FROM `OrderDetails` WHERE `OrderID` = 1 AND `ISBN` = '9780321765723';
+   
+   SELECT * FROM `OrderDetails` WHERE `OrderID` = 1;
+   
+   ```
+   - Books by Author: Write a query that joins Authors, BookAuthors, and Books to display a list of books and their authors.
+   ```SQL
+   SELECT `a`.`Name` AS `AuthorName`, `b`.`Title` AS `BookTitle`
+   FROM `Authors` `a`
+   JOIN `BookAuthors` `ba` ON `a`.`AuthorID` = `ba`.`AuthorID`
+   JOIN `Books` `b` ON `ba`.`ISBN` = `b`.`ISBN`;
+   
+   ```
+   - Complex Query: Write a more complex query that retrieves information based on multiple criteria. For example, find customers who have ordered books by a specific author.
+   ```SQL
+   SELECT `c`.`Name` AS `CustomerName`
+   FROM `Customers` `c`
+   JOIN `Orders` `o` ON `c`.`CustomerID` = `o`.`CustomerID`
+   JOIN `OrderDetails` `od` ON `o`.`OrderID` = `od`.`OrderID`
+   JOIN `Books` `b` ON `od`.`ISBN` = `b`.`ISBN`
+   JOIN `BookAuthors` `ba` ON `b`.`ISBN` = `ba`.`ISBN`
+   JOIN `Authors` `a` ON `ba`.`AuthorID` = `a`.`AuthorID`
+   WHERE `a`.`Name` = 'Douglas Adams'; -- Change author name as needed
+   
+   ```
+   - Save the `query_bookstore_data.sql` file.
+
+   4. Execute the SQL Scripts
+   - Open your SQL client (e.g., MySQL Workbench, pgAdmin, SQL Server Management Studio). Connect to your database server.
+   - Execute the `create_bookstore_schema.sql` script. This will create the database and tables.
+   - Execute the `insert_bookstore_data.sql` script. This will populate the tables with your sample data.
+   - Execute the `query_bookstore_data.sql` script. Examine the results of your queries.
+   
 ### **Step 4: Push Changes to GitHub**
 Once you've completed your changes, follow these steps to upload your work to your GitHub repository.
 
