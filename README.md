@@ -146,7 +146,6 @@ Only perform this if this is the first time you will setup your Git Environment
       - For the BookAuthors table, create a composite primary key using both ISBN and AuthorID.
       - Define foreign key constraints to enforce referential integrity. For example, in the Orders table, the CustomerID should be a foreign key referencing the Customers table's CustomerID. Do this for all appropriate relationships. The BookAuthors table will have two foreign keys.
    ```SQL
-   -- Books Table [cite: 11]
    CREATE TABLE `Books` (
        `ISBN` VARCHAR(20) PRIMARY KEY,
        `Title` VARCHAR(255) NOT NULL,
@@ -164,8 +163,8 @@ Only perform this if this is the first time you will setup your Git Environment
        `ISBN` VARCHAR(20),
        `AuthorID` INT,
        PRIMARY KEY (`ISBN`, `AuthorID`),
-       FOREIGN KEY (`ISBN`) REFERENCES Books(`ISBN`),
-       FOREIGN KEY (`AuthorID`) REFERENCES Authors(`AuthorID`)
+       FOREIGN KEY (`ISBN`) REFERENCES `Books`(`ISBN`),
+       FOREIGN KEY (`AuthorID`) REFERENCES `Authors`(`AuthorID`)
    );
    
    -- Customers Table [cite: 11]
@@ -180,7 +179,7 @@ Only perform this if this is the first time you will setup your Git Environment
        `OrderID` INT PRIMARY KEY,
        `CustomerID` INT,
        `OrderDate` DATE NOT NULL,
-       FOREIGN KEY (`CustomerID`) REFERENCES Customers(`CustomerID`)
+       FOREIGN KEY (`CustomerID`) REFERENCES `Customers`(`CustomerID`)
    );
    
    -- OrderDetails Table [cite: 11]
@@ -189,8 +188,8 @@ Only perform this if this is the first time you will setup your Git Environment
        `ISBN` VARCHAR(20),
        `Quantity` INT NOT NULL,
        PRIMARY KEY (`OrderID`, `ISBN`),
-       FOREIGN KEY (`OrderID`) REFERENCES Orders(`OrderID`),
-       FOREIGN KEY (`ISBN`) REFERENCES Books(`ISBN`)
+       FOREIGN KEY (`OrderID`) REFERENCES `Orders`(`OrderID`),
+       FOREIGN KEY (`ISBN`) REFERENCES `Books`(`ISBN`)
    );
    
    ```    
