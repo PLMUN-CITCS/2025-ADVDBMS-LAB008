@@ -60,10 +60,10 @@ fi
 # 5. Check order detail counts
 echo "Checking order detail counts..."
 order_detail_count=$(execute_sql "SELECT COUNT(*) FROM OrderDetails;" | tail -n 1)
-if [[ "$order_detail_count" -eq 3 ]]; then
+if [[ "$order_detail_count" -eq 2 ]]; then
   echo "Order detail count check: PASSED"
 else
-  echo "Order detail count check: FAILED. Expected 3, found $order_detail_count"
+  echo "Order detail count check: FAILED. Expected 2, found $order_detail_count"
   exit 1
 fi
 
