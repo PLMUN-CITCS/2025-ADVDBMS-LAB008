@@ -1,7 +1,7 @@
 -- Step 1: Create a database called BookstoreDB
 CREATE DATABASE `BookstoreDB`;
 
-USE DATABASE `BookstoreDB`;
+USE `BookstoreDB`;
 
 -- Books Table [cite: 11]
 CREATE TABLE `Books` (
