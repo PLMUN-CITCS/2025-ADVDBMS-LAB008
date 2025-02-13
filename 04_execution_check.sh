@@ -2,7 +2,7 @@
 
 # Database credentials (environment variables are recommended)
 DB_HOST="${DB_HOST:-127.0.0.1}"  # Default to 127.0.0.1 if not set
-DB_PORT="${DB_PORT:-3306}"      # Default to 4000 if not set
+DB_PORT="${DB_PORT:-4000}"      # Default to 4000 if not set
 DB_USER="${DB_USER:-root}"      # Default to root if not set
 
 # Directory containing the SQL scripts

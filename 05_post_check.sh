@@ -2,7 +2,7 @@
 
 # Database credentials (environment variables are recommended)
 DB_HOST="${DB_HOST:-127.0.0.1}"
-DB_PORT="${DB_PORT:-3306}"
+DB_PORT="${DB_PORT:-4000}"
 DB_USER="${DB_USER:-root}"
 DB_NAME="${DB_NAME:-BookstoreDB}"
 
