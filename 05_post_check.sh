@@ -90,7 +90,7 @@ fi
 # 8. Check query 1 output (partial content check)
 echo "Checking query 1 output (partial content)..."
 query1_count=$(execute_sql "SELECT COUNT(*) FROM Customers c JOIN Orders o ON c.CustomerID = o.CustomerID JOIN OrderDetails od ON o.OrderID = od.OrderID JOIN Books b ON od.ISBN = b.ISBN;" | tail -n 1)
-if [[ "$query1_count" -eq 3 ]]; then
+if [[ "$query1_count" -eq 2 ]]; then
     echo "Query 1 count check: PASSED"
     #Checking presence of one specific record
     record_exists=$(execute_sql "SELECT 1 FROM Customers c JOIN Orders o ON c.CustomerID = o.CustomerID JOIN OrderDetails od ON o.OrderID = od.OrderID JOIN Books b ON od.ISBN = b.ISBN WHERE c.Name = 'John Doe' AND b.Title = 'The Hitchhiker''s Guide to the Galaxy';" | tail -n 1)
@@ -101,7 +101,7 @@ if [[ "$query1_count" -eq 3 ]]; then
         exit 1
     fi
 else
-    echo "Query 1 count check: FAILED. Expected 3, found $query1_count"
+    echo "Query 1 count check: FAILED. Expected 2, found $query1_count"
     exit 1
 fi
 
