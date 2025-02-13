@@ -13,7 +13,7 @@ INSERT INTO `Authors` (`AuthorID`, `Name`) VALUES
 (3, 'Jane Austen');
 
 -- Insert into BookAuthors
-INSERT INTO BookAuthors (`ISBN`, `AuthorID`) VALUES
+INSERT INTO `BookAuthors` (`ISBN`, `AuthorID`) VALUES
 ('9781234567890', 1),
 ('9780321765723', 2),
 ('9780743273565', 3);

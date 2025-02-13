@@ -2,7 +2,7 @@
 
 # Database credentials (environment variables are recommended)
 DB_HOST="${DB_HOST:-127.0.0.1}"
-DB_PORT="${DB_PORT:-4000}"
+DB_PORT="${DB_PORT:-3306}"
 DB_USER="${DB_USER:-root}"
 DB_NAME="${DB_NAME:-BookstoreDB}"
 
@@ -171,23 +171,22 @@ echo "Checking Foreign Keys..."
 
 check_foreign_key() {
   table="$1"
-  fk_name="$2"
-  referenced_table="$3"
-  fk_exists=$(execute_sql "SELECT COUNT(*) FROM information_schema.REFERENTIAL_CONSTRAINTS WHERE CONSTRAINT_NAME = '$fk_name' AND TABLE_NAME = '$table' AND REFERENCED_TABLE_NAME = '$referenced_table';" | tail -n 1)
+  referenced_table="$2"
+  fk_exists=$(execute_sql "SELECT COUNT(*) FROM information_schema.REFERENTIAL_CONSTRAINTS WHERE TABLE_NAME = '$table' AND REFERENCED_TABLE_NAME = '$referenced_table';" | tail -n 1)
   if [[ "$fk_exists" -eq 1 ]]; then
-    echo "Foreign Key '$fk_name' in '$table' referencing '$referenced_table': PASSED"
+    echo "Foreign Key in '$table' referencing '$referenced_table': PASSED"
   else
-    echo "Foreign Key '$fk_name' in '$table' referencing '$referenced_table': FAILED"
+    echo "Foreign Key in '$table' referencing '$referenced_table': FAILED"
     exit 1
   fi
 }
 
 
-check_foreign_key "BookAuthors" "fk_books" "Books" # You'll need to name your FKs correctly
-check_foreign_key "BookAuthors" "fk_authors" "Authors"
-check_foreign_key "Orders" "fk_customers" "Customers"
-check_foreign_key "OrderDetails" "fk_orders" "Orders"
-check_foreign_key "OrderDetails" "fk_books" "Books"
+check_foreign_key "BookAuthors" "Books" # You'll need to name your FKs correctly
+check_foreign_key "BookAuthors" "Authors"
+check_foreign_key "Orders" "Customers"
+check_foreign_key "OrderDetails" "Orders"
+check_foreign_key "OrderDetails" "Books"
 
 
 

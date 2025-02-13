@@ -146,52 +146,53 @@ Only perform this if this is the first time you will setup your Git Environment
       - For the BookAuthors table, create a composite primary key using both ISBN and AuthorID.
       - Define foreign key constraints to enforce referential integrity. For example, in the Orders table, the CustomerID should be a foreign key referencing the Customers table's CustomerID. Do this for all appropriate relationships. The BookAuthors table will have two foreign keys.
    ```SQL
+   -- Books Table [cite: 11]
    CREATE TABLE `Books` (
-       `ISBN` VARCHAR(20) PRIMARY KEY,
-       `Title` VARCHAR(255) NOT NULL,
-       `Price` DECIMAL(10,2) NOT NULL
+      `ISBN` VARCHAR(20) PRIMARY KEY,
+      `Title` VARCHAR(255) NOT NULL,
+      `Price` DECIMAL(10,2) NOT NULL
    );
-   
+
    -- Authors Table [cite: 11]
    CREATE TABLE `Authors` (
-       `AuthorID` INT PRIMARY KEY,
-       `Name` VARCHAR(255) NOT NULL
+      `AuthorID` INT PRIMARY KEY,
+      `Name` VARCHAR(255) NOT NULL
    );
-   
+
    -- BookAuthors Table (Associative Entity) [cite: 11]
    CREATE TABLE `BookAuthors` (
-       `ISBN` VARCHAR(20),
-       `AuthorID` INT,
-       PRIMARY KEY (`ISBN`, `AuthorID`),
-       FOREIGN KEY (`ISBN`) REFERENCES `Books`(`ISBN`),
-       FOREIGN KEY (`AuthorID`) REFERENCES `Authors`(`AuthorID`)
+      `ISBN` VARCHAR(20),
+      `AuthorID` INT,
+      PRIMARY KEY (`ISBN`, `AuthorID`),
+      FOREIGN KEY (`ISBN`) REFERENCES `Books`(`ISBN`),
+      FOREIGN KEY (`AuthorID`) REFERENCES `Authors`(`AuthorID`)
    );
-   
+
    -- Customers Table [cite: 11]
    CREATE TABLE `Customers` (
-       `CustomerID` INT PRIMARY KEY,
-       `Name` VARCHAR(255) NOT NULL,
-       `Email` VARCHAR(255) NOT NULL
+      `CustomerID` INT PRIMARY KEY,
+      `Name` VARCHAR(255) NOT NULL,
+      `Email` VARCHAR(255) NOT NULL
    );
-   
+
    -- Orders Table [cite: 11]
    CREATE TABLE `Orders` (
-       `OrderID` INT PRIMARY KEY,
-       `CustomerID` INT,
-       `OrderDate` DATE NOT NULL,
-       FOREIGN KEY (`CustomerID`) REFERENCES `Customers`(`CustomerID`)
+      `OrderID` INT PRIMARY KEY,
+      `CustomerID` INT,
+      `OrderDate` DATE NOT NULL,
+      FOREIGN KEY (`CustomerID`) REFERENCES `Customers`(`CustomerID`)
    );
-   
+
    -- OrderDetails Table [cite: 11]
    CREATE TABLE `OrderDetails` (
-       `OrderID` INT,
-       `ISBN` VARCHAR(20),
-       `Quantity` INT NOT NULL,
-       PRIMARY KEY (`OrderID`, `ISBN`),
-       FOREIGN KEY (`OrderID`) REFERENCES `Orders`(`OrderID`),
-       FOREIGN KEY (`ISBN`) REFERENCES `Books`(`ISBN`)
+      `OrderID` INT,
+      `ISBN` VARCHAR(20),
+      `Quantity` INT NOT NULL,
+      PRIMARY KEY (`OrderID`, `ISBN`),
+      FOREIGN KEY (`OrderID`) REFERENCES `Orders`(`OrderID`),
+      FOREIGN KEY (`ISBN`) REFERENCES `Books`(`ISBN`)
    );
-   
+
    ```    
    - Save the create_bookstore_schema.sql file.
 
@@ -211,31 +212,31 @@ Only perform this if this is the first time you will setup your Git Environment
    ('9781234567890', 'The Hitchhiker''s Guide to the Galaxy', 7.99),
    ('9780321765723', 'The Lord of the Rings', 12.99),
    ('9780743273565', 'Pride and Prejudice', 9.99);
-   
+
    -- Insert into Authors
    INSERT INTO `Authors` (`AuthorID`, `Name`) VALUES
    (1, 'Douglas Adams'),
    (2, 'J.R.R. Tolkien'),
    (3, 'Jane Austen');
-   
+
    -- Insert into BookAuthors
-   INSERT INTO BookAuthors (`ISBN`, `AuthorID`) VALUES
+   INSERT INTO `BookAuthors` (`ISBN`, `AuthorID`) VALUES
    ('9781234567890', 1),
    ('9780321765723', 2),
    ('9780743273565', 3);
-   
+
    -- Insert into Customers
    INSERT INTO `Customers` (`CustomerID`, `Name`, `Email`) VALUES
    (1, 'John Doe', 'john.doe@example.com'),
    (2, 'Jane Smith', 'jane.smith@example.com'),
    (3, 'David Lee', 'david.lee@example.com');
-   
+
    -- Insert into Orders
    INSERT INTO `Orders` (`OrderID`, `CustomerID`, `OrderDate`) VALUES
    (1, 1, '2024-07-26'),
    (2, 2, '2024-07-27'),
    (3, 3, '2024-07-28');
-   
+
    -- Insert into OrderDetails
    INSERT INTO `OrderDetails` (`OrderID`, `ISBN`, `Quantity`) VALUES
    (1, '9781234567890', 1),
