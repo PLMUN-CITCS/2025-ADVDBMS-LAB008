@@ -207,7 +207,7 @@ Only perform this if this is the first time you will setup your Git Environment
       - Crucially: Ensure that foreign key relationships are satisfied. For example, when inserting into Orders, the CustomerID you use must exist in the Customers table. Similarly, when inserting into OrderDetails, the OrderID and ISBN must exist in the Orders and Books tables, respectively. The BookAuthors entries must reference valid ISBNs and AuthorIDs.
    ```SQL
    -- Insert into Books
-   INSERT INTO `Books` (`ISBN`, `Title`, Price) VALUES
+   INSERT INTO `Books` (`ISBN`, `Title`, `Price`) VALUES
    ('9781234567890', 'The Hitchhiker''s Guide to the Galaxy', 7.99),
    ('9780321765723', 'The Lord of the Rings', 12.99),
    ('9780743273565', 'Pride and Prejudice', 9.99);
@@ -241,7 +241,7 @@ Only perform this if this is the first time you will setup your Git Environment
    (1, '9781234567890', 1),
    (1, '9780321765723', 2),
    (2, '9780743273565', 1);
-   
+
    ```
    - Save the `insert_bookstore_data.sql` file.
 
