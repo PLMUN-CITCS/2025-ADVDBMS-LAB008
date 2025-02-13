@@ -161,10 +161,10 @@ check_primary_key() {
 
 check_primary_key "Books" "Column_nameISBN"
 check_primary_key "Authors" "Column_nameAuthorID"
-check_primary_key "BookAuthors" "Column_nameISBN,Column_nameAuthorID" # Composite key
+check_primary_key "BookAuthors" "Column_nameISBNAuthorID" # Composite key
 check_primary_key "Customers" "Column_nameCustomerID"
 check_primary_key "Orders" "Column_nameOrderID"
-check_primary_key "OrderDetails" "Column_nameOrderID,Column_nameISBN" # Composite key
+check_primary_key "OrderDetails" "Column_nameOrderIDISBN" # Composite key
 
 # 12. Check Foreign Keys
 echo "Checking Foreign Keys..."
