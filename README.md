@@ -1,5 +1,5 @@
 # **2025-ADVDBMS-LAB008**
-Week 02 - Review on Database Concepts
+Week 04 - Entity–Relationship Modeling
 
 Laboratory # 08 - Combined Week 04 Database Activity
 
