@@ -1,3 +1,4 @@
+-- Step 1: Create a database called BookstoreDB
 CREATE DATABASE `BookstoreDB`;
 
 USE DATABASE `BookstoreDB`;
