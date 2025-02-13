@@ -1,6 +1,6 @@
 #!/bin/bash
 
-directory="university_db"
+directory="bookstore_database"
 
 if [ -d "$directory" ]; then
 echo "Folder exists"

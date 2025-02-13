@@ -6,12 +6,12 @@ DB_PORT="${DB_PORT:-4000}"      # Default to 4000 if not set
 DB_USER="${DB_USER:-root}"      # Default to root if not set
 
 # Directory containing the SQL scripts
-SQL_DIR="university_db"
+SQL_DIR="bookstore_database"
 
 # Array of SQL script filenames (or use a wildcard)
 declare -a SQL_FILES
 #SQL_FILES=("$SQL_DIR"/*.sql)  # Dynamically get all .sql files
-SQL_FILES=("setup.sql" "select_all_students.sql" "select_students_by_enrollment_date.sql" "join_students_and_enrollments.sql" "insert_courses.sql" "insert_enrollments.sql") # Array of filenames
+SQL_FILES=("create_bookstore_schema.sql" "insert_bookstore_data.sql" "query_bookstore_data.sql") # Array of filenames
 
 # Loop through the SQL files
 for sql_file in "${SQL_FILES[@]}"; do

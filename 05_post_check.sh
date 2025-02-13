@@ -4,116 +4,191 @@
 DB_HOST="${DB_HOST:-127.0.0.1}"
 DB_PORT="${DB_PORT:-4000}"
 DB_USER="${DB_USER:-root}"
-DB_NAME="${DB_NAME:-UniversityDB}"
+DB_NAME="${DB_NAME:-BookstoreDB}"
 
 execute_sql() {
   mysql -h "$DB_HOST" -P "$DB_PORT" -u "$DB_USER" -D "$DB_NAME" -e "$1"
   if [[ $? -ne 0 ]]; then
     echo "Error executing SQL: $1"
-    return 1 # Return non-zero status
+    return 1
   fi
-  return 0 # Return zero status (success)
+  return 0
 }
 
 # --- Validation ---
 
-# 1. Check Course Count
-echo "Checking Course count..."
-course_count=$(execute_sql "SELECT COUNT(*) FROM Courses;" | tail -n 1)
-if [[ "$course_count" -eq 5 ]]; then
-  echo "Course count check: PASSED"
+# 1. Check book counts
+echo "Checking book counts..."
+book_count=$(execute_sql "SELECT COUNT(*) FROM Books;" | tail -n 1)
+if [[ "$book_count" -eq 3 ]]; then
+  echo "Book count check: PASSED"
 else
-  echo "Course count check: FAILED. Expected 5, found $course_count"
+  echo "Book count check: FAILED. Expected 3, found $book_count"
   exit 1
 fi
 
-# 2. Check Enrollment Count
-echo "Checking Enrollment count..."
-enrollment_count=$(execute_sql "SELECT COUNT(*) FROM Enrollments;" | tail -n 1)
-if [[ "$enrollment_count" -eq 5 ]]; then
-  echo "Enrollment count check: PASSED"
+# 2. Check author counts
+echo "Checking author counts..."
+author_count=$(execute_sql "SELECT COUNT(*) FROM Authors;" | tail -n 1)
+if [[ "$author_count" -eq 3 ]]; then
+  echo "Author count check: PASSED"
 else
-  echo "Enrollment count check: FAILED. Expected 5, found $enrollment_count"
+  echo "Author count check: FAILED. Expected 3, found $author_count"
   exit 1
 fi
 
-# 3. Check Bob's updated email
-echo "Checking Bob's email..."
-bob_email=$(execute_sql "SELECT Email FROM Students WHERE FirstName = 'Bob' AND LastName = 'Johnson';" | tail -n 1)
-if [[ "$bob_email" == "bob.j@example.com" ]]; then
-  echo "Bob's email check: PASSED"
+# 3. Check customer counts
+echo "Checking customer counts..."
+customer_count=$(execute_sql "SELECT COUNT(*) FROM Customers;" | tail -n 1)
+if [[ "$customer_count" -eq 3 ]]; then
+  echo "Customer count check: PASSED"
 else
-  echo "Bob's email check: FAILED. Expected bob.j@example.com, found $bob_email"
+  echo "Customer count check: FAILED. Expected 3, found $customer_count"
   exit 1
 fi
 
-# 4. Check Charlie's deletion (count)
-echo "Checking Charlie's deletion..."
-charlie_count=$(execute_sql "SELECT COUNT(*) FROM Students WHERE FirstName = 'Charlie' AND LastName = 'Lee';" | tail -n 1)
-if [[ "$charlie_count" -eq 0 ]]; then
-  echo "Charlie's deletion check: PASSED"
+# 4. Check order counts
+echo "Checking order counts..."
+order_count=$(execute_sql "SELECT COUNT(*) FROM Orders;" | tail -n 1)
+if [[ "$order_count" -eq 3 ]]; then
+  echo "Order count check: PASSED"
 else
-  echo "Charlie's deletion check: FAILED. Charlie still exists."
+  echo "Order count check: FAILED. Expected 3, found $order_count"
   exit 1
 fi
 
-
-# 5. Check select all students output (count)
-echo "Checking select all students count..."
-all_students_count=$(execute_sql "SELECT COUNT(*) FROM Students;" | tail -n 1)
-if [[ "$all_students_count" -eq 2 ]]; then # After deletion
-  echo "Select all students count check: PASSED"
+# 5. Check order detail counts
+echo "Checking order detail counts..."
+order_detail_count=$(execute_sql "SELECT COUNT(*) FROM OrderDetails;" | tail -n 1)
+if [[ "$order_detail_count" -eq 3 ]]; then
+  echo "Order detail count check: PASSED"
 else
-  echo "Select all students count check: FAILED. Expected 2, found $all_students_count"
+  echo "Order detail count check: FAILED. Expected 3, found $order_detail_count"
   exit 1
 fi
 
-# 6. Check students by enrollment date output (count and content - more complex)
-echo "Checking students by enrollment date..."
-enrollment_date_count=$(execute_sql "SELECT COUNT(*) FROM Students WHERE EnrollmentDate = '2023-09-01';" | tail -n 1)
-if [[ "$enrollment_date_count" -eq 2 ]]; then
-    echo "Students by enrollment date count check: PASSED"
+# 6. Check updated book price
+echo "Checking updated book price..."
+book_price=$(execute_sql "SELECT Price FROM Books WHERE ISBN = '9781234567890';" | tail -n 1)
+if [[ "$book_price" == "8.99" ]]; then
+  echo "Book price check: PASSED"
+else
+  echo "Book price check: FAILED. Expected 8.99, found $book_price"
+  exit 1
+fi
 
-    #More thorough check (order may vary, so just checking presence)
-    alice_exists=$(execute_sql "SELECT 1 FROM Students WHERE FirstName = 'Alice' AND EnrollmentDate = '2023-09-01';" | tail -n 1)
-    bob_exists=$(execute_sql "SELECT 1 FROM Students WHERE FirstName = 'Bob' AND EnrollmentDate = '2023-09-01';" | tail -n 1)
+# 7. Check deleted order detail (count)
+echo "Checking deleted order detail..."
+order_detail_count=$(execute_sql "SELECT COUNT(*) FROM OrderDetails WHERE OrderID = 1 AND ISBN = '9780321765723';" | tail -n 1)
+if [[ "$order_detail_count" -eq 0 ]]; then
+  echo "Order detail deletion check: PASSED"
+else
+  echo "Order detail deletion check: FAILED. Record still exists."
+  exit 1
+fi
 
-    if [[ "$alice_exists" == 1 && "$bob_exists" == 1 ]]; then
-       echo "Students by enrollment date content check: PASSED"
+# 8. Check query 1 output (partial content check)
+echo "Checking query 1 output (partial content)..."
+query1_count=$(execute_sql "SELECT COUNT(*) FROM Customers c JOIN Orders o ON c.CustomerID = o.CustomerID JOIN OrderDetails od ON o.OrderID = od.OrderID JOIN Books b ON od.ISBN = b.ISBN;" | tail -n 1)
+if [[ "$query1_count" -eq 3 ]]; then
+    echo "Query 1 count check: PASSED"
+    #Checking presence of one specific record
+    record_exists=$(execute_sql "SELECT 1 FROM Customers c JOIN Orders o ON c.CustomerID = o.CustomerID JOIN OrderDetails od ON o.OrderID = od.OrderID JOIN Books b ON od.ISBN = b.ISBN WHERE c.Name = 'John Doe' AND b.Title = 'The Hitchhiker''s Guide to the Galaxy';" | tail -n 1)
+    if [[ "$record_exists" == 1 ]]; then
+        echo "Query 1 content check: PASSED"
     else
-        echo "Students by enrollment date content check: FAILED"
+        echo "Query 1 content check: FAILED"
+        exit 1
+    fi
+else
+    echo "Query 1 count check: FAILED. Expected 3, found $query1_count"
+    exit 1
+fi
+
+
+# 9. Check query 4 output (partial content check)
+echo "Checking query 4 output (partial content)..."
+query4_count=$(execute_sql "SELECT COUNT(*) FROM Authors a JOIN BookAuthors ba ON a.AuthorID = ba.AuthorID JOIN Books b ON ba.ISBN = b.ISBN;" | tail -n 1)
+if [[ "$query4_count" -eq 3 ]]; then
+    echo "Query 4 count check: PASSED"
+    #Checking presence of one specific record
+    record_exists=$(execute_sql "SELECT 1 FROM Authors a JOIN BookAuthors ba ON a.AuthorID = ba.AuthorID JOIN Books b ON ba.ISBN = b.ISBN WHERE a.Name = 'Douglas Adams' AND b.Title = 'The Hitchhiker''s Guide to the Galaxy';" | tail -n 1)
+    if [[ "$record_exists" == 1 ]]; then
+        echo "Query 4 content check: PASSED"
+    else
+        echo "Query 4 content check: FAILED"
+        exit 1
+    fi
+else
+    echo "Query 4 count check: FAILED. Expected 3, found $query4_count"
+    exit 1
+fi
+
+
+# 10. Check query 5 output (partial content check)
+echo "Checking query 5 output (partial content)..."
+query5_count=$(execute_sql "SELECT COUNT(*) FROM Customers c JOIN Orders o ON c.CustomerID = o.CustomerID JOIN OrderDetails od ON o.OrderID = od.OrderID JOIN Books b ON od.ISBN = b.ISBN JOIN BookAuthors ba ON b.ISBN = ba.ISBN JOIN Authors a ON ba.AuthorID = a.AuthorID WHERE a.Name = 'Douglas Adams';" | tail -n 1)
+
+if [[ "$query5_count" -eq 1 ]]; then
+  echo "Query 5 count check: PASSED"
+  record_exists=$(execute_sql "SELECT 1 FROM Customers c JOIN Orders o ON c.CustomerID = o.CustomerID JOIN OrderDetails od ON o.OrderID = od.OrderID JOIN Books b ON od.ISBN = b.ISBN JOIN BookAuthors ba ON b.ISBN = ba.ISBN JOIN Authors a ON ba.AuthorID = a.AuthorID WHERE a.Name = 'Douglas Adams' AND c.Name = 'John Doe';" | tail -n 1)
+  if [[ "$record_exists" == 1 ]]; then
+        echo "Query 5 content check: PASSED"
+    else
+        echo "Query 5 content check: FAILED"
         exit 1
     fi
 
-
 else
-  echo "Students by enrollment date check: FAILED. Expected 2, found $enrollment_date_count"
+  echo "Query 5 count check: FAILED. Expected 1, found $query5_count"
   exit 1
 fi
 
+# 11. Check Primary Keys
+echo "Checking Primary Keys..."
 
-# 7. Check the join output (count and content - more complex)
-echo "Checking join output..."
-join_count=$(execute_sql "SELECT COUNT(*) FROM Students AS s INNER JOIN Enrollments AS e ON s.StudentID = e.StudentID INNER JOIN Courses AS c ON e.CourseID = c.CourseID;" | tail -n 1)
-if [[ "$join_count" -eq 5 ]]; then
-  echo "Join output count check: PASSED"
+check_primary_key() {
+  table="$1"
+  expected_key="$2" # Can be a single column or comma-separated for composite keys
+  actual_key=$(execute_sql "SHOW KEYS FROM $table WHERE Key_name = 'PRIMARY';" | awk '{print $5}' | tr -d '\n')
+  if [[ "$actual_key" == "$expected_key" ]]; then
+    echo "$table Primary Key check: PASSED"
+  else
+    echo "$table Primary Key check: FAILED. Expected: '$expected_key', Found: '$actual_key'"
+    exit 1
+  fi
+}
 
-  #More thorough check (order may vary, so just checking presence of a few records)
-  alice_course1_exists=$(execute_sql "SELECT 1 FROM Students AS s INNER JOIN Enrollments AS e ON s.StudentID = e.StudentID INNER JOIN Courses AS c ON e.CourseID = c.CourseID WHERE s.FirstName = 'Alice' AND c.CourseName = 'Introduction to Computer Science';" | tail -n 1)
-  bob_course2_exists=$(execute_sql "SELECT 1 FROM Students AS s INNER JOIN Enrollments AS e ON s.StudentID = e.StudentID INNER JOIN Courses AS c ON e.CourseID = c.CourseID WHERE s.FirstName = 'Bob' AND c.CourseName = 'Calculus I';" | tail -n 1)
+check_primary_key "Books" "ISBN"
+check_primary_key "Authors" "AuthorID"
+check_primary_key "BookAuthors" "ISBN,AuthorID" # Composite key
+check_primary_key "Customers" "CustomerID"
+check_primary_key "Orders" "OrderID"
+check_primary_key "OrderDetails" "OrderID,ISBN" # Composite key
 
-    if [[ "$alice_course1_exists" == 1 && "$bob_course2_exists" == 1 ]]; then
-       echo "Join output content check: PASSED"
-    else
-        echo "Join output content check: FAILED"
-        exit 1
-    fi
+# 12. Check Foreign Keys
+echo "Checking Foreign Keys..."
+
+check_foreign_key() {
+  table="$1"
+  fk_name="$2"
+  referenced_table="$3"
+  fk_exists=$(execute_sql "SELECT COUNT(*) FROM information_schema.REFERENTIAL_CONSTRAINTS WHERE CONSTRAINT_NAME = '$fk_name' AND TABLE_NAME = '$table' AND REFERENCED_TABLE_NAME = '$referenced_table';" | tail -n 1)
+  if [[ "$fk_exists" -eq 1 ]]; then
+    echo "Foreign Key '$fk_name' in '$table' referencing '$referenced_table': PASSED"
+  else
+    echo "Foreign Key '$fk_name' in '$table' referencing '$referenced_table': FAILED"
+    exit 1
+  fi
+}
 
 
-else
-  echo "Join output check: FAILED. Expected 5, found $join_count"
-  exit 1
-fi
+check_foreign_key "BookAuthors" "fk_books" "Books" # You'll need to name your FKs correctly
+check_foreign_key "BookAuthors" "fk_authors" "Authors"
+check_foreign_key "Orders" "fk_customers" "Customers"
+check_foreign_key "OrderDetails" "fk_orders" "Orders"
+check_foreign_key "OrderDetails" "fk_books" "Books"
+
 
 
 echo "All script validations passed!"

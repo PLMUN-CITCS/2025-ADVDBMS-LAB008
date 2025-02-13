@@ -1,8 +1,8 @@
 #!/bin/bash
 
 declare -a files
-directory="university_db"
-SQL_FILES=("setup.sql" "select_all_students.sql" "select_students_by_enrollment_date.sql" "join_students_and_enrollments.sql" "insert_courses.sql" "insert_enrollments.sql") # Array of filenames
+directory="bookstore_database"
+SQL_FILES=("create_bookstore_schema.sql" "insert_bookstore_data.sql" "query_bookstore_data.sql") # Array of filenames
 
 # Check if sqlfluff is installed.  If not, provide instructions.
 if ! command -v sqlfluff &> /dev/null; then
